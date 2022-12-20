@@ -2,6 +2,10 @@ from matplotlib import pyplot as plt
 import os
 import cv2
 
+# TODO: Adapter pour automatiser la créatio de multiples visuels
+# TODO: Utiliser pour générer l'ensemble des visuels pour BabyGarches
+# TODO: Pip nouvelle version du paquet
+
 class ShapOnImage:
 
     def __init__(self, image, features, shap, positions={}):
