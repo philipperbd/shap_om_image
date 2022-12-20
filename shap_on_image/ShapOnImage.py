@@ -1,10 +1,12 @@
 from matplotlib import pyplot as plt
 import os
 import cv2
+from shap_on_image.utils import *
 
 # TODO: Adapter pour automatiser la créatio de multiples visuels
 # TODO: Utiliser pour générer l'ensemble des visuels pour BabyGarches
 # TODO: Pip nouvelle version du paquet
+# TODO: Créer script utils.py pour simplifier l'écriture de la Class
 
 class ShapOnImage:
 
@@ -17,7 +19,7 @@ class ShapOnImage:
             positions: dict, features with 'x' and 'y' values, can be set with set_positions()
         """       
         try: 
-            os.path.exists(self.image)
+            os.path.exists(image)
             self.image = image
             self.features = features
             self.shap = shap 
@@ -26,15 +28,6 @@ class ShapOnImage:
         except:
             print('Error during init - verify path to image')
     
-    def put_shap_in_values(self):
-        """
-        Add shap values in values variable containing features names, positions and shap values.
-        """
-        id = 0
-        for key, _ in self.values.items():
-            self.values[key]['shap'] = self.shap[id]
-            id +=1
-    
     def set_positions(self):
         """
         Tool to select positions of every feature on the image.
@@ -42,34 +35,12 @@ class ShapOnImage:
         if not hasattr(self, 'image'):
             print('No image loaded yet - use get_image() function')
         else:
-            positions = {}
-            def ask_feature(nb):
-                print('Positions for', self.features[nb], end=" ")
-
-            def click_event(event, x, y, flags, params):
-                if event == cv2.EVENT_LBUTTONDOWN:
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    cv2.putText(img, str(x) + ',' +
-                                str(y), (x,y), font,
-                                1, (255, 0, 0), 2)
-                    cv2.imshow('image', img)
-
-                    positions[self.features[self.feature_cnt]] = {'x' : x, 'y': y}
-                    
-                    print(x, y)
-
-                    self.feature_cnt += 1
-                    if self.feature_cnt == len(self.features):
-                            cv2.destroyAllWindows()
-                    else: ask_feature(self.feature_cnt)
-            
             img = cv2.imread(self.image, 1)
             cv2.imshow('image', img)
-            ask_feature(0)
-            cv2.setMouseCallback('image', click_event)
+            ask_for_feature(self)
+            cv2.setMouseCallback('image', click_event, [self, img])
             cv2.waitKey(0)
-            self.values = positions
-            self.put_shap_in_values()
+            add_shap_to_values(self)
     
     def plot(self, suptitle="", title="", alpha=1):
         """
@@ -91,7 +62,7 @@ class ShapOnImage:
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
 
-        for _, value in self.values.items():
+        for _, value in self.positions.items():
             shap = value['shap'] * alpha
             x = value['x']
             y = value['y']
