@@ -1,9 +1,10 @@
 from matplotlib import pyplot as plt
 import os
+import cv2
 
 class ShapOnImage:
 
-    def __init__(self, image, dimensions, values, alpha=1, suptitle="", title=""):
+    def __init__(self, suptitle="", title=""):
         """
         args:
             image: str, path to image
@@ -12,15 +13,53 @@ class ShapOnImage:
             alpha: float, coefficient to multiply every shap values to better visualisation
             suptitle: str, main title of output figure
             title: str, title of output figure
-        """
-        self.image = image                      
-        self.dimensions = dimensions           
-        self.values = values                    
-        self.alpha = alpha
-        if self.alpha != 1: 
-            self.adjusted_values(values, self.alpha)
+        """          
+        self.feature_cnt = 0
         self.suptitle = suptitle               
-        self.title = title                     
+        self.title = title
+
+    def get_image(self, image, dimensions):
+        self.image = image                      
+        self.dimensions = dimensions      
+    
+    def get_positions(self, features):
+        if not hasattr(self, 'image'):
+            print('No image loaded yet - use get_image() function')
+        else:
+            positions = {}
+            def ask_feature(nb):
+                print('Positions for', features[nb], end=" ")
+
+            def click_event(event, x, y, flags, params):
+                if event == cv2.EVENT_LBUTTONDOWN:
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    cv2.putText(img, str(x) + ',' +
+                                str(y), (x,y), font,
+                                1, (255, 0, 0), 2)
+                    cv2.imshow('image', img)
+
+                    positions[features[self.feature_cnt]] = {'x' : x, 'y': y}
+                    
+                    print(x, y)
+
+                    self.feature_cnt += 1
+                    if self.feature_cnt == len(features):
+                            cv2.destroyAllWindows()
+                    else: ask_feature(self.feature_cnt)
+            
+            img = cv2.imread(self.image, 1)
+            cv2.imshow('image', img)
+            ask_feature(0)
+            cv2.setMouseCallback('image', click_event)
+            cv2.waitKey(0)
+            print('List of features-positions:', positions)
+            self.values = positions
+
+    def get_shap(self, shap_values):
+        id = 0
+        for key, _ in self.values.items():
+            self.values[key]['shap'] = shap_values[id]
+            id +=1
     
     def check_init(self):
         """
@@ -44,20 +83,7 @@ class ShapOnImage:
         else:
             print('Positions according to Image dimensions: OK')
     
-    def adjusted_values(self, values, alpha):
-        """
-        Adjust shap values by multiplying with coefficient alpĥa
-        args:
-            values: dict, positions and shap values of every feature
-            alpha: float, coefficient to multiply shap values by
-        """
-        self.values = values
-        self.alpha = alpha
-        for _, value in self.values.items():
-            value['shap'] = value['shap'] * alpha
-
-    
-    def plot(self):
+    def plot(self, alpha=1):
         """
         Plot the figure with image and shap values at specific positions
         """
@@ -74,7 +100,7 @@ class ShapOnImage:
         plt.title(self.title)
 
         for _, value in self.values.items():
-            shap = value['shap']
+            shap = value['shap'] * alpha
             x = value['x']
             y = value['y']
             color = ["cornflowerblue" if shap > 0 else "crimson"]
