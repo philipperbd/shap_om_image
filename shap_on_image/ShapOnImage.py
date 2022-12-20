@@ -6,7 +6,6 @@ from shap_on_image.utils import *
 # TODO: Adapter pour automatiser la créatio de multiples visuels
 # TODO: Utiliser pour générer l'ensemble des visuels pour BabyGarches
 # TODO: Pip nouvelle version du paquet
-# TODO: Créer script utils.py pour simplifier l'écriture de la Class
 
 class ShapOnImage:
 
