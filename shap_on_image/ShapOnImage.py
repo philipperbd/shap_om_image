@@ -4,30 +4,37 @@ import cv2
 
 class ShapOnImage:
 
-    def __init__(self, image, dimensions, features, shap, positions={}):
+    def __init__(self, image, features, shap, positions={}):
         """
         args:
             image: str, path to image
-            dimensions: list, dimensions of output image (e.g. [0, 300, 0, 220])
-            values: dict, positions on figure (verify dimensions) and shap values for every feature
-            alpha: float, coefficient to multiply every shap values to better visualisation
-            suptitle: str, main title of output figure
-            title: str, title of output figure
-        """         
-        self.image = image
-        self.dimensions = dimensions
-        self.features = features
-        self.shap = shap 
-        self.positions = positions
-        self.feature_cnt = 0
+            features: list, features names as strings
+            shap: list, shap values extracted from shap packages
+            positions: dict, features with 'x' and 'y' values, can be set with set_positions()
+        """       
+        try: 
+            os.path.exists(self.image)
+            self.image = image
+            self.features = features
+            self.shap = shap 
+            self.positions = positions
+            self.feature_cnt = 0
+        except:
+            print('Error during init - verify path to image')
     
     def put_shap_in_values(self):
+        """
+        Add shap values in values variable containing features names, positions and shap values.
+        """
         id = 0
         for key, _ in self.values.items():
             self.values[key]['shap'] = self.shap[id]
             id +=1
     
     def set_positions(self):
+        """
+        Tool to select positions of every feature on the image.
+        """
         if not hasattr(self, 'image'):
             print('No image loaded yet - use get_image() function')
         else:
@@ -60,32 +67,13 @@ class ShapOnImage:
             self.values = positions
             self.put_shap_in_values()
     
-    
-    def check_init(self):
-        """
-        Print results of few tests on class initialisation
-        """
-        print('---Initialisation Check---')
-        if os.path.exists(self.image):
-            print('Path to Image: OK')
-        else:
-            print('Path to Image: ERROR')
-        dim_error = False
-        for _, value in self.values.items():
-            x = value['x']
-            y = value['y']
-            max_x = self.dimensions[1]
-            max_y = self.dimensions[3]
-            if x > max_x or y > max_y:
-                dim_error = True
-        if dim_error:
-            print('Positions according to Image dimensions: ERROR')
-        else:
-            print('Positions according to Image dimensions: OK')
-    
     def plot(self, suptitle="", title="", alpha=1):
         """
         Plot the figure with image and shap values at specific positions
+        args:
+            suptitle: str, suptitle to display on image
+            title: str, title to display on image
+            alpha: float, coefficient to multiply every shap values by.
         """
         try:
             im = plt.imread(self.image)
@@ -93,7 +81,7 @@ class ShapOnImage:
             print('Can\'t load image, verify path to image -> cf. Check_init()')
             return
         fig, ax = plt.subplots()
-        im = ax.imshow(im, extent=self.dimensions)
+        im = ax.imshow(im)
         plt.axis('off')
 
         plt.suptitle(suptitle, weight="bold")
