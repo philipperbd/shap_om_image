@@ -4,7 +4,7 @@ import cv2
 
 class ShapOnImage:
 
-    def __init__(self, suptitle="", title=""):
+    def __init__(self, image, dimensions, features, shap, positions={}):
         """
         args:
             image: str, path to image
@@ -13,22 +13,27 @@ class ShapOnImage:
             alpha: float, coefficient to multiply every shap values to better visualisation
             suptitle: str, main title of output figure
             title: str, title of output figure
-        """          
+        """         
+        self.image = image
+        self.dimensions = dimensions
+        self.features = features
+        self.shap = shap 
+        self.positions = positions
         self.feature_cnt = 0
-        self.suptitle = suptitle               
-        self.title = title
-
-    def get_image(self, image, dimensions):
-        self.image = image                      
-        self.dimensions = dimensions      
     
-    def get_positions(self, features):
+    def put_shap_in_values(self):
+        id = 0
+        for key, _ in self.values.items():
+            self.values[key]['shap'] = self.shap[id]
+            id +=1
+    
+    def set_positions(self):
         if not hasattr(self, 'image'):
             print('No image loaded yet - use get_image() function')
         else:
             positions = {}
             def ask_feature(nb):
-                print('Positions for', features[nb], end=" ")
+                print('Positions for', self.features[nb], end=" ")
 
             def click_event(event, x, y, flags, params):
                 if event == cv2.EVENT_LBUTTONDOWN:
@@ -38,12 +43,12 @@ class ShapOnImage:
                                 1, (255, 0, 0), 2)
                     cv2.imshow('image', img)
 
-                    positions[features[self.feature_cnt]] = {'x' : x, 'y': y}
+                    positions[self.features[self.feature_cnt]] = {'x' : x, 'y': y}
                     
                     print(x, y)
 
                     self.feature_cnt += 1
-                    if self.feature_cnt == len(features):
+                    if self.feature_cnt == len(self.features):
                             cv2.destroyAllWindows()
                     else: ask_feature(self.feature_cnt)
             
@@ -52,14 +57,9 @@ class ShapOnImage:
             ask_feature(0)
             cv2.setMouseCallback('image', click_event)
             cv2.waitKey(0)
-            print('List of features-positions:', positions)
             self.values = positions
-
-    def get_shap(self, shap_values):
-        id = 0
-        for key, _ in self.values.items():
-            self.values[key]['shap'] = shap_values[id]
-            id +=1
+            self.put_shap_in_values()
+    
     
     def check_init(self):
         """
@@ -83,7 +83,7 @@ class ShapOnImage:
         else:
             print('Positions according to Image dimensions: OK')
     
-    def plot(self, alpha=1):
+    def plot(self, suptitle="", title="", alpha=1):
         """
         Plot the figure with image and shap values at specific positions
         """
@@ -96,8 +96,8 @@ class ShapOnImage:
         im = ax.imshow(im, extent=self.dimensions)
         plt.axis('off')
 
-        plt.suptitle(self.suptitle, weight="bold")
-        plt.title(self.title)
+        plt.suptitle(suptitle, weight="bold")
+        plt.title(title)
 
         for _, value in self.values.items():
             shap = value['shap'] * alpha
