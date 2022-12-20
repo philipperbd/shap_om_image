@@ -9,11 +9,20 @@ def add_shap_to_values(self):
         id +=1
 
 def ask_for_feature(self):
+    """
+    Print feature we are looking for positions x/y on image.
+    """
     print('Positions for', self.features[self.feature_cnt], end=" ")
     self.feature_cnt += 1
     
 
 def click_event(event, x, y, flags, params):
+    """
+    Click event handler for left mouse click to select positions of features on image.
+
+    Args:
+        params (list): [ShapOnImage instance, OpenCV img]
+    """
     import cv2
     self, img = params[0], params[1]
     if event == cv2.EVENT_LBUTTONDOWN:
