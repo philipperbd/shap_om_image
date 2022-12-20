@@ -49,11 +49,7 @@ class ShapOnImage:
             title: str, title to display on image
             alpha: float, coefficient to multiply every shap values by.
         """
-        try:
-            im = plt.imread(self.image)
-        except: 
-            print('Can\'t load image, verify path to image -> cf. Check_init()')
-            return
+        im = plt.imread(self.image)
         fig, ax = plt.subplots()
         im = ax.imshow(im)
         plt.axis('off')
