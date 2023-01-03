@@ -52,12 +52,15 @@ class ShapOnImageAuto:
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
 
-        for feature, shap_value in self.shap[plot_name].items():
-            shap = shap_value * alpha
-            x = self.positions[feature]['x']
-            y = self.positions[feature]['y']
-            color = ["cornflowerblue" if shap > 0 else "crimson"]
-            plt.scatter(x, y, s=abs(shap), color=color)
+        for feature, shap_value in self.shap[plot_name][0].items():
+            try:
+                shap = shap_value * alpha
+                x = self.positions[feature]['x']
+                y = self.positions[feature]['y']
+                color = ["cornflowerblue" if shap > 0 else "crimson"]
+                plt.scatter(x, y, s=abs(shap), color=color)
+            except:
+                print(plot_name, feature)
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png');
