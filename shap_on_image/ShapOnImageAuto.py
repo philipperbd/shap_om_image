@@ -60,24 +60,23 @@ class ShapOnImageAuto:
             auc = self.auc[dataset]['auc']
             std = self.auc[dataset]['std']
         except:
-            auc = 50
-            std = 0.02
+            auc = 00
+            std = 00
 
 
-        plt.suptitle(suptitle, weight="bold")
-        plt.title(plot_name + '_' + str(auc) + '_'+ str(std))
+        plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
+        plt.title('XGBoost mean AUC : ' + str(auc) + ' ('+ str(std) + ')')
 
         for feature, shap_value in self.shap[plot_name].items():
             try:
-                
                 shap = shap_value * alpha
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
                 color = ["cornflowerblue" if shap > 0 else "crimson"]
                 plt.scatter(x, y, s=abs(shap), color=color)
             except:
-                #print(plot_name, feature)
-                continue
+                print(plot_name, feature)
+                
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
