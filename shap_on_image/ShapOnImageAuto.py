@@ -59,8 +59,6 @@ class ShapOnImageAuto:
             for word in check_list_right:
                 if word in feature.lower(): right.append(shap_value)
                 else: left.append(shap_value)
-        
-        print(plot_name, sum(top), sum(bot), sum(right), sum(left))
 
         top, bot, right, left = sum(top), sum(bot), sum(right), sum(left)
         
@@ -89,16 +87,15 @@ class ShapOnImageAuto:
         im = ax.imshow(im)
         plt.axis('off')
 
+        dataset = plot_name.rsplit('_', 1)[0]
         try:
-            dataset = plot_name.rsplit('_', 1)[0]
-            auc = self.auc[dataset]['mean']
-            std = self.auc[dataset]['std']
+            mean = round(self.auc[dataset]['mean'], 2)
+            std = round(self.auc[dataset]['std'], 2)
         except:
-            auc = 00
-            std = 00
+            mean, std = 0, 0
 
         plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
-        plt.title('XGBoost mean AUC : ' + str(auc) + ' ('+ str(std) + ')')
+        plt.title('XGBoost mean AUC : ' + str(mean) + ' ('+ str(std) + ')')
 
         for feature, shap_value in self.shap[plot_name].items():
             try:
@@ -108,7 +105,7 @@ class ShapOnImageAuto:
                 color = ["cornflowerblue" if shap > 0 else "crimson"]
                 plt.scatter(x, y, s=abs(shap), color=color)
             except:
-                print(plot_name, feature)
+                print("", end="")
 
         sym_top_bot, sym_left_right = self.symmetry(plot_name=plot_name)
         plt.arrow(400, 410, sym_left_right * 3, 0, head_width=5, color="crimson")
