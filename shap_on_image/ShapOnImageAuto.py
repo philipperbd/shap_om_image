@@ -36,6 +36,12 @@ class ShapOnImageAuto:
             cv2.setMouseCallback('image', click_event, [self, img])
             cv2.waitKey(0)
 
+    def get_positions(self):
+        """
+        Return list of positions
+        """
+        return self.positions
+
     def create_plot(self, path, plot_name, suptitle="", title="", alpha=1):
         """
         Plot the figure with image and shap values at specific positions
@@ -50,20 +56,21 @@ class ShapOnImageAuto:
         plt.axis('off')
 
         plt.suptitle(suptitle, weight="bold")
-        plt.title(title)
+        plt.title(plot_name)
 
-        for feature, shap_value in self.shap[plot_name][0].items():
-            try:
+        for feature, shap_value in self.shap[plot_name].items():
+            #try:
+            
                 shap = shap_value * alpha
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
                 color = ["cornflowerblue" if shap > 0 else "crimson"]
                 plt.scatter(x, y, s=abs(shap), color=color)
-            except:
-                print(plot_name, feature)
+            #except:
+            #    print(plot_name, feature)
 
         plt.close(fig)
-        fig.savefig(path + plot_name + '.png');
+        fig.savefig(path + plot_name + '.png')
 
     def create_plots(self, path = "", alpha=1):
         """Create several plots and save them in path.
@@ -73,6 +80,7 @@ class ShapOnImageAuto:
             alpha (int, optional): Coefficient to multiply shap values by. Defaults to 1.
         """
         for plot_name, _ in self.shap.items():
+            print(plot_name)
             self.create_plot(path, plot_name, alpha=alpha)
         
         
