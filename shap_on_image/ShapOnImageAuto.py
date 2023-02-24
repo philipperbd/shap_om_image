@@ -5,7 +5,7 @@ from shap_on_image.utils import *
 
 class ShapOnImageAuto:
 
-    def __init__(self, image, features, shap, positions={}):
+    def __init__(self, image, features, shap, auc, positions={}):
         """
         args:
             image: str, path to image
@@ -18,6 +18,7 @@ class ShapOnImageAuto:
             self.image = image
             self.features = features
             self.shap = shap 
+            self.auc = auc
             self.positions = positions
             self.feature_cnt = 0
         except:
@@ -54,20 +55,29 @@ class ShapOnImageAuto:
         fig, ax = plt.subplots()
         im = ax.imshow(im)
         plt.axis('off')
+        try:
+            dataset = plot_name.rsplit('_', 1)[0]
+            auc = self.auc[dataset]['auc']
+            std = self.auc[dataset]['std']
+        except:
+            auc = 50
+            std = 0.02
+
 
         plt.suptitle(suptitle, weight="bold")
-        plt.title(plot_name)
+        plt.title(plot_name + '_' + str(auc) + '_'+ str(std))
 
         for feature, shap_value in self.shap[plot_name].items():
-            #try:
-            
+            try:
+                
                 shap = shap_value * alpha
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
                 color = ["cornflowerblue" if shap > 0 else "crimson"]
                 plt.scatter(x, y, s=abs(shap), color=color)
-            #except:
-            #    print(plot_name, feature)
+            except:
+                #print(plot_name, feature)
+                continue
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
@@ -80,7 +90,7 @@ class ShapOnImageAuto:
             alpha (int, optional): Coefficient to multiply shap values by. Defaults to 1.
         """
         for plot_name, _ in self.shap.items():
-            print(plot_name)
+            #print(plot_name)
             self.create_plot(path, plot_name, alpha=alpha)
         
         
