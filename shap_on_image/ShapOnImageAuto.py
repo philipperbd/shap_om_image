@@ -86,6 +86,7 @@ class ShapOnImageAuto:
         fig, ax = plt.subplots()
         im = ax.imshow(im)
         plt.axis('off')
+        print_lines = False
 
         dataset = plot_name.rsplit('_', 1)[0]
         try:
@@ -98,14 +99,23 @@ class ShapOnImageAuto:
         plt.title('XGBoost mean AUC : ' + str(mean) + ' ('+ str(std) + ')')
 
         for feature, shap_value in self.shap[plot_name].items():
-            try:
-                shap = shap_value * alpha
+            shap = shap_value * alpha
+            color = 'blue'
+            
+            if plot_name[:11] == 'linear_data':
+                feature_type = feature[-2:]
+                x = self.positions[feature[:-2]]['x']
+                y = self.positions[feature[:-2]]['y']
+                shap = shap / 5
+
+                if feature_type == '_x':
+                    plt.plot([x - abs(shap), x + abs(shap)], [y, y], color='blue')
+                else:
+                    plt.plot([x, x], [y - abs(shap), y + abs(shap)], color='blue')
+            else:
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
-                color = ["cornflowerblue" if shap > 0 else "crimson"]
                 plt.scatter(x, y, s=abs(shap), color=color)
-            except:
-                print("", end="")
 
         sym_top_bot, sym_left_right = self.symmetry(plot_name=plot_name)
         plt.arrow(400, 410, sym_left_right * 3, 0, head_width=5, color="crimson")
