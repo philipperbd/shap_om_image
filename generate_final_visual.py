@@ -34,6 +34,17 @@ for i in range(0, len(image_filenames), 2):
     if i % (2 * max_rows) == 0:
         pdf.add_page()
 
+    # Get the common name part of the current pair of images
+    name1 = image_filenames[i].split("_")[0]
+    if i + 1 < len(image_filenames):
+        name2 = image_filenames[i + 1].split("_")[0]
+
+    # If the common name part of the current pair of images is different from the previous pair, add a title
+    if i == 0 or name1 != prev_name1 or name2 != prev_name2:
+        pdf.set_font("Arial", size=16)
+        pdf.cell(0, 10, f"{name1} Images", ln=1, align="C")
+        prev_name1, prev_name2 = name1, name2
+
     # Load the first image and resize it to fit the fixed size
     image1 = Image.open(os.path.join(folder_path, image_filenames[i]))
     image1.thumbnail((IMAGE_WIDTH, IMAGE_HEIGHT))
@@ -57,5 +68,5 @@ for i in range(0, len(image_filenames), 2):
         # Add the second image to the current row
         pdf.image(image2.filename, x2, y2, IMAGE_WIDTH, IMAGE_HEIGHT)
 
-# Save the PDF document to a file named "output.pdf"
-pdf.output("output.pdf")
+# Save the PDF document to a file named "REPORT.pdf"
+pdf.output("REPORT.pdf")

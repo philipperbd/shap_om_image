@@ -88,15 +88,8 @@ class ShapOnImageAuto:
         plt.axis('off')
         print_lines = False
 
-        dataset = plot_name.rsplit('_', 1)[0]
-        try:
-            mean = round(self.auc[dataset]['mean'], 2)
-            std = round(self.auc[dataset]['std'], 2)
-        except:
-            mean, std = 0, 0
-
-        plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
-        plt.title('XGBoost mean AUC : ' + str(mean) + ' ('+ str(std) + ')')
+        #plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
+        #plt.title('XGBoost mean AUC : ' + str(mean) + ' ('+ str(std) + ')')
 
         for feature, shap_value in self.shap[plot_name].items():
             shap = shap_value * alpha
