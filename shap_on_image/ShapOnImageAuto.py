@@ -61,11 +61,13 @@ class ShapOnImageAuto:
                 else: left.append(shap_value)
 
         top, bot, right, left = sum(top), sum(bot), sum(right), sum(left)
+
+        print(plot_name, "top ", top, "bot", bot, "left", left, "right", right)
         
-        if bot > top:
-            sym_top_bot = round(bot / top)
+        if top > bot:
+            sym_top_bot = round(top / bot)
         else:
-            sym_top_bot = round(top / bot) * -1
+            sym_top_bot = round(bot / top) * -1
         
         if left > right:
             sym_left_right = round(left / right)
@@ -99,7 +101,7 @@ class ShapOnImageAuto:
                 feature_type = feature[-2:]
                 x = self.positions[feature[:-2]]['x']
                 y = self.positions[feature[:-2]]['y']
-                shap = shap / 5
+                shap = shap / 7 
 
                 if feature_type == '_x':
                     plt.plot([x - abs(shap), x + abs(shap)], [y, y], color='blue')
@@ -111,8 +113,12 @@ class ShapOnImageAuto:
                 plt.scatter(x, y, s=abs(shap), color=color)
 
         sym_top_bot, sym_left_right = self.symmetry(plot_name=plot_name)
-        plt.arrow(400, 410, sym_left_right * 3, 0, head_width=5, color="crimson")
-        plt.arrow(400, 410, 0, sym_top_bot * 3, head_width=5, color="crimson")
+
+        plt.text(0, 1, "Left / Right: " + str(sym_left_right))
+        plt.text(0, 20, "Top / Bot: " + str(sym_top_bot))
+
+        plt.arrow(202, 221, sym_left_right * 3, 0, head_width=5, color="crimson")
+        plt.arrow(202, 221, 0, -sym_top_bot * 3, head_width=5, color="crimson")
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
