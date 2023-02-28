@@ -47,32 +47,58 @@ class ShapOnImageAuto:
         """
         return value of symmetry for top/bot and left/right
         """
-        check_list_top = ['shoulder', 'elbow', 'wrist', 'top']
-        check_list_right = ['rshoulder', 'relbow', 'rwrist', 'rhip', 'rknee', 'rankle', 'right']
+        check_list_top = [
+            'lshoulder-lelbow', 'rshoulder-relbow', 'lelbow-lwrist', 'relbow-rwrist',
+            'lshoulder', 'rshoulder', 'lelbow', 'relbow', 'lwrist', 'rwrist',
+            'top_right', 'top_left']
+        check_list_right = [
+            'rshoulder-relbow', 'relbow-rwrist', 'rshoulder', 'relbow', 'rwrist',
+            'rhip-rknee', 'rknee-rankle', 'rhip', 'rknee', 'rankle',
+            'top_right', 'bot_right']
+        
         
         top, bot, right, left = [], [], [], []
+        nb_top, nb_bot, nb_right, nb_left = 0, 0, 0, 0
+
+        print(plot_name)
         
         for feature, shap_value in self.shap[plot_name].items():
-            for word in check_list_top:
-                if word in feature.lower(): top.append(shap_value)
-                else: bot.append(shap_value)
-            for word in check_list_right:
-                if word in feature.lower(): right.append(shap_value)
-                else: left.append(shap_value)
+            if feature == "Face":
+                continue
+            if plot_name[:11] == 'linear_data':
+                feature = feature[:-2]
+            if feature.lower() in check_list_top:
+                #print("top", feature)
+                top.append(shap_value)
+                nb_top += 1
+            else: 
+                #print("bot", feature)
+                bot.append(shap_value)
+                nb_bot += 1
+            if feature.lower() in check_list_right:
+                #print("right", feature)
+                right.append(shap_value)    
+                nb_right += 1
+            else: 
+                #print("left", feature)
+                left.append(shap_value)
+                nb_left += 1
 
         top, bot, right, left = sum(top), sum(bot), sum(right), sum(left)
 
-        print(plot_name, "top ", top, "bot", bot, "left", left, "right", right)
-        
-        if top > bot:
-            sym_top_bot = round(top / bot)
+        if bot > top:
+            sym_top_bot = round((bot / top), 2)
         else:
-            sym_top_bot = round(bot / top) * -1
-        
-        if left > right:
-            sym_left_right = round(left / right)
+            sym_top_bot = round((top / bot), 2)
+        if right > left:
+            sym_left_right = round((right / left), 2) * -1
         else:
-            sym_left_right = round(right / left) * -1
+            sym_left_right = round((left / right), 2)
+
+        print(top, bot, left, right)
+        print(sym_top_bot, sym_left_right)
+
+        print('--------------')
 
         return sym_top_bot, sym_left_right
 
@@ -90,35 +116,39 @@ class ShapOnImageAuto:
         plt.axis('off')
         print_lines = False
 
-        #plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
-        #plt.title('XGBoost mean AUC : ' + str(mean) + ' ('+ str(std) + ')')
+        dataset = plot_name[:plot_name.rfind('_')]
+
+        mean = round(self.auc[dataset]['mean'], 2)
+        std = round(self.auc[dataset]['std'], 2)
+        sym_top_bot, sym_left_right = self.symmetry(plot_name=plot_name)
+
+        plt.suptitle(plot_name.replace('_', ' ').upper(), weight="bold")
+        plt.title(
+            'AUC: ' + str(mean) + '('+ str(std) + ') ' + \
+            'L/R: ' + str(sym_left_right) + ' ' + \
+            'T/B: ' + str(-sym_top_bot))
 
         for feature, shap_value in self.shap[plot_name].items():
             shap = shap_value * alpha
             color = 'blue'
             
-            if plot_name[:11] == 'linear_data':
+            if plot_name[:11] == 'linear_data' and feature != "Face":
                 feature_type = feature[-2:]
                 x = self.positions[feature[:-2]]['x']
                 y = self.positions[feature[:-2]]['y']
                 shap = shap / 7 
 
                 if feature_type == '_x':
-                    plt.plot([x - abs(shap), x + abs(shap)], [y, y], color='blue')
+                    plt.plot([x - abs(shap)/2, x + abs(shap)/2], [y, y], color='blue')
                 else:
-                    plt.plot([x, x], [y - abs(shap), y + abs(shap)], color='blue')
+                    plt.plot([x, x], [y - abs(shap)/2, y + abs(shap)/2], color='blue')
             else:
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
                 plt.scatter(x, y, s=abs(shap), color=color)
 
-        sym_top_bot, sym_left_right = self.symmetry(plot_name=plot_name)
-
-        plt.text(0, 1, "Left / Right: " + str(sym_left_right))
-        plt.text(0, 20, "Top / Bot: " + str(sym_top_bot))
-
-        plt.arrow(202, 221, sym_left_right * 3, 0, head_width=5, color="crimson")
-        plt.arrow(202, 221, 0, -sym_top_bot * 3, head_width=5, color="crimson")
+        plt.arrow(202, 221, sym_left_right * 10, 0, head_width=5, color="crimson")
+        plt.arrow(202, 221, 0, sym_top_bot * 10, head_width=5, color="crimson")
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
