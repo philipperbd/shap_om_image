@@ -107,6 +107,6 @@ for label in ["global", "normal", "anormal"]:
         plt.savefig("Data/V2/Stats/" + label + "_AUC_vs_" + sym_type + ".png");
 
 json = json.dumps(stats)
-f = open("Data/V2/Stats/stats.json", "w")
+f = open("Data/V2/Stats_outputs/stats.json", "w")
 f.write(json)
 f.close()

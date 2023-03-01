@@ -7,7 +7,7 @@ from shap_on_image.utils import *
 
 class ShapOnImageAuto:
 
-    def __init__(self, image, features, values, shap, auc, positions={}):
+    def __init__(self, image, features, values, shap, stats, positions={}):
         """
         args:
             image: str, path to image
@@ -21,7 +21,7 @@ class ShapOnImageAuto:
             self.features = features
             self.values = values
             self.shap = shap
-            self.auc = auc
+            self.stats = stats
             self.positions = positions
             self.feature_cnt = 0
         except:
@@ -77,16 +77,6 @@ class ShapOnImageAuto:
 
         plt.arrow(x=arr_x, y=arr_y, dx=0, dy=sym[0]*10, head_width=5, color="purple", label='symmetry') # top / bot
         plt.arrow(x=arr_x, y=arr_y, dx=sym[1]*10, dy=0, head_width=5, color="purple") # left / right
-        
-
-        # LEGEND
-    
-        legend_elements = scatter.legend_elements(prop="sizes", alpha=0.6)
-        handles1, labels1 = legend_elements
-        handles2, labels2 = scatter.legend_elements()
-        handles = [handles1[0], handles2[0]]
-        labels = ["SHAP", "Values"]
-        legend = ax.legend(handles, labels, loc="lower left")
         
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
@@ -147,7 +137,7 @@ class ShapOnImageAuto:
         """
         for plot_name, _ in self.shap.items():
             suptitle, title, sym = informations(
-                self, plot_name=plot_name, auc=self.auc)
+                self, plot_name=plot_name, stats=self.stats)
             if plot_name[:11] == 'linear_data':
                 self.create_plot_linear(
                     path=path, plot_name=plot_name,

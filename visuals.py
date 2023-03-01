@@ -20,14 +20,14 @@ with open(path + 'values.json') as json_file:
 with open(path + 'positions.json') as pos_file:
     positions = json.load(pos_file)
 
-with open(path + version + 'shap_v2_face_scalled.json') as shap_file:
+with open(path + version + 'shap_scalled.json') as shap_file:
     shap = json.load(shap_file)
-with open(path + version + 'auc_v2_face.json') as auc_file:
-    auc = json.load(auc_file)
+with open(path + version + 'stats.json') as stats_file:
+    stats = json.load(stats_file)
 
 
 ShapImAuto = ShapOnImageAuto(image=image, features=features,
                              positions=positions, values=values, 
-                             shap=shap, auc=auc)
+                             shap=shap, stats=stats)
 
-ShapImAuto.create_plots(path="Visuals/V2_face/", alpha=1000)
+ShapImAuto.create_plots(path="Visuals/V2/", alpha=1000)
