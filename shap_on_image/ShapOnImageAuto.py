@@ -71,13 +71,23 @@ class ShapOnImageAuto:
         shap_values = [shap_value*alpha for shap_value in shap_dataset.values()]
         color = [feature_color(plot_name, feature, self.values) if feature != "Face" else 0.5 for feature in shap_dataset.keys()]
             
-        plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr)
+        scatter = plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
 
         arr_x, arr_y = 202, 221
 
-        plt.arrow(x=arr_x, y=arr_y, dx=0, dy=sym[0]*10, head_width=5, color="purple") # top / bot
+        plt.arrow(x=arr_x, y=arr_y, dx=0, dy=sym[0]*10, head_width=5, color="purple", label='symmetry') # top / bot
         plt.arrow(x=arr_x, y=arr_y, dx=sym[1]*10, dy=0, head_width=5, color="purple") # left / right
+        
 
+        # LEGEND
+    
+        legend_elements = scatter.legend_elements(prop="sizes", alpha=0.6)
+        handles1, labels1 = legend_elements
+        handles2, labels2 = scatter.legend_elements()
+        handles = [handles1[0], handles2[0]]
+        labels = ["SHAP", "Values"]
+        legend = ax.legend(handles, labels, loc="lower left")
+        
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
 
