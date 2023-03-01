@@ -1,6 +1,6 @@
 mkdir $1/Visuals
 mkdir $1/Stats_outputs
-python shap_dict.py --input $1/Model --output $1/shap.json
+python shap_dict.py --input $1/$2 --output $1/shap.json
 echo "shap.json created at $1"
 python minmaxscaler.py --input $1/shap.json
 echo "shap_scalled.json created at $1"

@@ -8,7 +8,7 @@ parser.add_argument("--path")
 
 args = parser.parse_args()
 
-image = 'baby.png'
+image = 'baby_legend.png'
 features = [
     "RShoulder", "RElbow", "RWrist", "LShoulder", "LElbow", "LWrist",
     "RHip", "RKnee", "RAnkle", "LHip", "LKnee", "LAnkle",
@@ -35,5 +35,6 @@ with open(args.path + '/stats.json') as stats_file:
 ShapImAuto = ShapOnImageAuto(image=image, features=features,
                              positions=positions, values=values, 
                              shap=shap, stats=stats)
+
 
 ShapImAuto.create_plots(path=args.path + '/Visuals/', alpha=1000)
