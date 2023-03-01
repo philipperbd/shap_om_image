@@ -71,9 +71,9 @@ class ShapOnImageAuto:
             plt.scatter(x, y, s=abs(shap), color=color)
 
         plt.arrow(202, 221, 0, sym[0] * 10,
-                  head_width=5, color="crimson")  # Top/Bot
+                  head_width=5, color="purple")  # Top/Bot
         plt.arrow(202, 221, sym[1] * 10, 0, head_width=5,
-                  color="crimson")  # Left/Right
+                  color="purple")  # Left/Right
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
@@ -95,12 +95,9 @@ class ShapOnImageAuto:
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
 
-        print(plot_name)
-
         for feature, shap_value in self.shap[plot_name].items():
-            print(feature)
             shap = shap_value * alpha
-            color = 'blue'
+            color = feature_color(plot_name, feature, self.values)
 
             if feature == "Face":
                 x = self.positions[feature]['x']
@@ -121,9 +118,9 @@ class ShapOnImageAuto:
                              y + abs(shap)/2], color=color)
 
         plt.arrow(202, 221, 0, sym[0] * 10,
-                  head_width=5, color="crimson")  # Top/Bot
+                  head_width=5, color="purple")  # Top/Bot
         plt.arrow(202, 221, sym[1] * 10, 0, head_width=5,
-                  color="crimson")  # Left/Right
+                  color="purple")  # Left/Right
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
