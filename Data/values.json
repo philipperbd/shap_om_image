@@ -1,0 +1,16 @@
+{
+    "depth": {
+        "normal": {
+            "RShoulder-RElbow": {
+                "mean_value": 17,
+                "std_value": 5
+            },
+        "anormal": {
+                "RShoulder-RElbow": {
+                    "mean_value": 22,
+                    "std_value": 4
+                }
+            }
+        }
+    }
+}
