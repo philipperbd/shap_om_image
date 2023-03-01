@@ -73,10 +73,10 @@ class ShapOnImageAuto:
             
         plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr)
 
-        plt.arrow(202, 221, 0, sym[0] * 10,
-                  head_width=5, color="purple")  # Top/Bot
-        plt.arrow(202, 221, sym[1] * 10, 0, head_width=5,
-                  color="purple")  # Left/Right
+        arr_x, arr_y = 202, 221
+
+        plt.arrow(x=arr_x, y=arr_y, dx=0, dy=sym[0]*10, head_width=5, color="purple") # top / bot
+        plt.arrow(x=arr_x, y=arr_y, dx=sym[1]*10, dy=0, head_width=5, color="purple") # left / right
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png')
