@@ -1,4 +1,5 @@
-echo "directory $1 created"
+mkdir $1/Visuals
+mkdir $1/Stats_outputs
 python shap_dict.py --input $1/Model --output $1/shap.json
 echo "shap.json created at $1"
 python minmaxscaler.py --input $1/shap.json
