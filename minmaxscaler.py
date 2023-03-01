@@ -1,10 +1,18 @@
 import os
 import pickle
 import json
+import argparse
 
-file = 'Data/V2/shap_v2_face'
+parser = argparse.ArgumentParser()
 
-f = open(file + '.json')
+parser.add_argument("--input")
+parser.add_argument("--output")
+
+args = parser.parse_args()
+
+file = args.input[:-5]
+
+f = open(args.input)
 data = json.load(f)
 f.close()
 

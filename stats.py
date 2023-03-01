@@ -1,5 +1,12 @@
 import matplotlib.pyplot as plt
 import json
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--path")
+
+args = parser.parse_args()
 
 def symmetry(shap, plot_name):
     """
@@ -49,12 +56,12 @@ def symmetry(shap, plot_name):
     return [sym_top_bot, sym_left_right]
 
 # ouvrir shap dict
-f = open('Data/V2/shap_v2.json')
+f = open(args.path + "shap_scalled.json")
 shap = json.load(f)
 f.close()
 
 # ouvrir auc dict
-f = open('Data/V2/auc_v2.json')
+f = open(args.path + "auc.json")
 auc = json.load(f)
 f.close()
 
@@ -104,9 +111,9 @@ for label in ["global", "normal", "anormal"]:
 
         plt.ylim(0.6, 1)
 
-        plt.savefig("Data/V2/Stats/" + label + "_AUC_vs_" + sym_type + ".png");
+        plt.savefig(args.path + "Stats_outputs/" + label + "_AUC_vs_" + sym_type + ".png")
 
 json = json.dumps(stats)
-f = open("Data/V2/Stats_outputs/stats.json", "w")
+f = open(args.path + "stats.json", "w")
 f.write(json)
 f.close()
