@@ -1,4 +1,5 @@
 from matplotlib import pyplot as plt
+import matplotlib.cm as cm
 import os
 import cv2
 from shap_on_image.utils import *
@@ -6,7 +7,7 @@ from shap_on_image.utils import *
 
 class ShapOnImageAuto:
 
-    def __init__(self, image, features, shap, auc, positions={}):
+    def __init__(self, image, features, values, shap, auc, positions={}):
         """
         args:
             image: str, path to image
@@ -18,7 +19,7 @@ class ShapOnImageAuto:
             os.path.exists(image)
             self.image = image
             self.features = features
-            # self.values = values
+            self.values = values
             self.shap = shap
             self.auc = auc
             self.positions = positions
@@ -57,18 +58,20 @@ class ShapOnImageAuto:
         fig, ax = plt.subplots()
         im = ax.imshow(im)
         plt.axis('off')
-        print_lines = False
 
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
+        
+        shap_dataset = self.shap[plot_name] # d[name]
 
-        for feature, shap_value in self.shap[plot_name].items():
-            shap = shap_value * alpha
-            color = 'blue'
-
-            x = self.positions[feature]['x']
-            y = self.positions[feature]['y']
-            plt.scatter(x, y, s=abs(shap), color=color)
+        features = [feature for feature in shap_dataset.keys()]
+        
+        x = [self.positions[feature]['x'] for feature in features]
+        y = [self.positions[feature]['y'] for feature in features]
+        shap_values = [shap_value*alpha for shap_value in shap_dataset.values()]
+        color = [feature_color(plot_name, feature, self.values) if feature != "Face" else 0.5 for feature in shap_dataset.keys()]
+            
+        plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr)
 
         plt.arrow(202, 221, 0, sym[0] * 10,
                   head_width=5, color="purple")  # Top/Bot
@@ -90,19 +93,19 @@ class ShapOnImageAuto:
         fig, ax = plt.subplots()
         im = ax.imshow(im)
         plt.axis('off')
-        print_lines = False
 
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
 
         for feature, shap_value in self.shap[plot_name].items():
             shap = shap_value * alpha
-            color = feature_color(plot_name, feature, self.values)
+            #color = feature_color(plot_name, feature, self.values)
+            color = "blue"
 
             if feature == "Face":
                 x = self.positions[feature]['x']
                 y = self.positions[feature]['y']
-                plt.scatter(x, y, s=abs(shap), color=color)
+                plt.scatter(x, y, s=abs(shap), c=color)
 
             else:
                 feature_type = feature[-2:]
@@ -112,10 +115,10 @@ class ShapOnImageAuto:
 
                 if feature_type == '_x':
                     plt.plot([x - abs(shap)/2, x + abs(shap)/2],
-                             [y, y], color=color)
+                             [y, y], c=color)
                 else:
                     plt.plot([x, x], [y - abs(shap)/2,
-                             y + abs(shap)/2], color=color)
+                             y + abs(shap)/2], c=color)
 
         plt.arrow(202, 221, 0, sym[0] * 10,
                   head_width=5, color="purple")  # Top/Bot

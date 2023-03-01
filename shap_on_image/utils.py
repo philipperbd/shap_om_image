@@ -110,5 +110,9 @@ def feature_color(plot_name, feature, values):
     """Return int value corresponding to color in colormap
     """
     dataset, label = plot_name.rsplit('_', 1)
-    color = values[dataset][label][feature]["mean_values"]
+    if feature == "Face":
+        color = "blue"
+    else: 
+        color = values[dataset][label][feature]["mean_value"]
+    #print(plot_name, feature, color)
     return color
