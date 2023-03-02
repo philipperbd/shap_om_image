@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import json
 import argparse
+import json
 
 parser = argparse.ArgumentParser()
 
@@ -55,6 +55,32 @@ def symmetry(shap, plot_name):
 
     return [sym_top_bot, sym_left_right]
 
+def stats_dict(auc, datasets):
+    stats = auc
+    for dataset in datasets:
+        t_b, l_r = [], []
+        for label in ["_normal", "_anormal"]:
+            stats[dataset]["mean"] = round(stats[dataset]["mean"], 2)
+            stats[dataset]["std"] = round(stats[dataset]["std"], 2)
+            stats[dataset]["sym" + label] = {}
+            if dataset != "amplitudes":
+                sym = symmetry(shap=shap, plot_name=dataset+label)
+                stats[dataset]["sym" + label]["T-B"] = sym[0] 
+                stats[dataset]["sym" + label]["L-R"] = sym[1] 
+                t_b.append(sym[0])
+                l_r.append(sym[1])
+        stats[dataset]["sym_global"] = {
+            "T-B": round(sum(t_b)/2, 2), 
+            "L-R": round(sum(l_r)/2, 2)}
+    return stats
+
+def save(stats):
+    import json
+    js = json.dumps(stats)
+    f = open(args.path + "stats.json", "w")
+    f.write(js)
+    f.close()
+
 # ouvrir shap dict
 f = open(args.path + "shap_scalled.json")
 shap = json.load(f)
@@ -67,53 +93,7 @@ f.close()
 
 datasets = [dataset for dataset in auc.keys()]
 
-stats = auc
-for dataset in datasets:
-    t_b, l_r = [], []
-    for label in ["_normal", "_anormal"]:
-        stats[dataset]["mean"] = round(stats[dataset]["mean"], 2)
-        stats[dataset]["std"] = round(stats[dataset]["std"], 2)
-        stats[dataset]["sym" + label] = {}
-        if dataset != "amplitudes":
-            sym = symmetry(shap=shap, plot_name=dataset+label)
-            stats[dataset]["sym" + label]["T-B"] = sym[0] 
-            stats[dataset]["sym" + label]["L-R"] = sym[1] 
-            t_b.append(sym[0])
-            l_r.append(sym[1])
-    stats[dataset]["sym_global"] = {
-        "T-B": round(sum(t_b)/2, 2), 
-        "L-R": round(sum(l_r)/2, 2)}
+stats = stats_dict(auc=auc, datasets=datasets)
 
-datasets_to_remove = [
-    'angular_velocity', 'angular_jurk', 'angular_data', 
-    'amplitudes', 'angular_acceleration', 'linear_data']
-for dataset in datasets_to_remove:
-    datasets.remove(dataset)
 
-for label in ["global", "normal", "anormal"]:
-    for sym_type in ["T-B", "L-R"]:
-
-        x = [stats[dataset]["sym_"+label][sym_type] for dataset in datasets]
-        y = [stats[dataset]["mean"] for dataset in datasets]
-        y_error = [stats[dataset]["std"] for dataset in datasets]
-
-        combined = zip(x, y, y_error, datasets)
-        sorted_combined = sorted(combined, key=lambda x: x[0])
-        x_sorted, y_sorted, y_error_sorted, datasets_sorted = zip(*sorted_combined)
-
-        fig, ax = plt.subplots()
-
-        plt.errorbar(x_sorted, y_sorted, yerr=y_error_sorted, fmt='o', capsize=5)
-
-        plt.xlabel(sym_type)
-        plt.ylabel("Mean AUC")
-        plt.title(label.upper() + " - AUC vs " + sym_type)
-
-        plt.ylim(0.6, 1)
-
-        plt.savefig(args.path + "Stats_outputs/" + label + "_AUC_vs_" + sym_type + ".png")
-
-json = json.dumps(stats)
-f = open(args.path + "stats.json", "w")
-f.write(json)
-f.close()
+save(stats=stats)
