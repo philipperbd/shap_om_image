@@ -1,4 +1,6 @@
+echo "--Start--"
 source venv/bin/activate
+echo "Virtual environment activated."
 rm -rf $1/Visuals
 rm -rf $1/Stats_outputs
 echo "Cleaning done!"
@@ -13,3 +15,6 @@ python stats.py --path $1/
 echo "stats.json done."
 python visuals.py --path $1 --image $3
 echo "visuals done."
+deactivate
+echo "Virtual environment deactivated."
+echo "--End--"
