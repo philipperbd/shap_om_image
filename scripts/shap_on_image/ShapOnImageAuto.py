@@ -104,7 +104,8 @@ class ShapOnImageAuto:
 
         for feature, shap_value in self.shap[plot_name].items():
             shap = shap_value * alpha
-            color = feature_color(plot_name, feature, self.values)
+            #color = feature_color(plot_name, feature, self.values)
+            color = "green"
 
             if feature == "Face":
                 x = self.positions[feature]['x']
