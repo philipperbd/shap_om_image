@@ -23,7 +23,7 @@ features = [
 
 r_path, version = args.path.rsplit('/', 1)
 
-with open(r_path + '/values.json') as json_file:
+with open(r_path + '/mean_values.json') as json_file:
     values = json.load(json_file)
 with open(r_path + '/positions.json') as pos_file:
     positions = json.load(pos_file)

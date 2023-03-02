@@ -61,23 +61,28 @@ class ShapOnImageAuto:
 
         plt.suptitle(suptitle, weight="bold")
         plt.title(title)
-        
-        shap_dataset = self.shap[plot_name] # d[name]
+
+        shap_dataset = self.shap[plot_name]  # d[name]
 
         features = [feature for feature in shap_dataset.keys()]
-        
+
         x = [self.positions[feature]['x'] for feature in features]
         y = [self.positions[feature]['y'] for feature in features]
-        shap_values = [shap_value*alpha for shap_value in shap_dataset.values()]
-        color = [feature_color(plot_name, feature, self.values) if feature != "Face" else 0.5 for feature in shap_dataset.keys()]
-            
+        shap_values = [shap_value *
+                       alpha for shap_value in shap_dataset.values()]
+        color = [
+            feature_color(plot_name, feature, self.values)
+            for feature in shap_dataset.keys()]
+
         plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
 
         arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
 
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]*15, head_width=5, color="purple") # top / bot
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15, dy=0, head_width=5, color="purple") # left / right
-        
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]
+                  * 15, head_width=5, color="purple")  # top / bot
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15,
+                  dy=0, head_width=5, color="purple")  # left / right
+
         plt.close(fig)
         fig.savefig(path + plot_name + '.png', dpi=500)
 
@@ -99,8 +104,7 @@ class ShapOnImageAuto:
 
         for feature, shap_value in self.shap[plot_name].items():
             shap = shap_value * alpha
-            #color = feature_color(plot_name, feature, self.values)
-            color = "blue"
+            color = feature_color(plot_name, feature, self.values)
 
             if feature == "Face":
                 x = self.positions[feature]['x']
@@ -141,10 +145,10 @@ class ShapOnImageAuto:
             if plot_name[:11] == 'linear_data':
                 self.create_plot_linear(
                     path=path, plot_name=plot_name,
-                    suptitle=suptitle, title=title, 
+                    suptitle=suptitle, title=title,
                     sym=sym, alpha=alpha)
             else:
                 self.create_plot(
                     path=path, plot_name=plot_name,
-                    suptitle=suptitle, title=title, 
+                    suptitle=suptitle, title=title,
                     sym=sym, alpha=alpha)
