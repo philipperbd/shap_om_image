@@ -1,23 +1,25 @@
 echo "--Start--"
 source venv/bin/activate
 echo "Virtual environment activated."
-rm -rf $1/Visuals
-rm -rf $1/Stats_outputs
-rm $1/shap.json $1/shap_scalled.json $1/stats.json
+rm -rf data/$1/baby_visuals
+rm -rf data/$1/stats_plots
+rm data/$1/shap.json data/$1/shap_scalled.json data/$1/stats.json
 echo "Cleaning done!"
-mkdir $1/Visuals
-mkdir $1/Stats_outputs
+mkdir data/$1/baby_visuals
+mkdir data/$1/stats_plots
 echo "New directories created at $1"
-python shap_dict.py --input $1/$2 --output $1/shap.json
+python scripts/shap_dict.py --input data/$1/$2 --output data/$1/shap.json
 echo "shap.json done."
-python minmaxscaler.py --input $1/shap.json
+python scripts/minmaxscaler.py --input data/$1/shap.json
 echo "shap_scalled.json done."
-python stats_dict.py --path $1/
+python scripts/stats_dict.py --path data/$1/
 echo "stats.json done."
-python stats_plots.py --path $1/
+python scripts/stats_plots.py --path data/$1/
 echo "stats visuals done."
-python visuals.py --path $1 --image $3
+python scripts/visuals.py --path data/$1 --image data/baby.png
 echo "baby visuals done."
+zip -r reports/$1_$2.zip data/$1/stats_plots data/$1/baby_visuals &> /dev/null
+echo "report zip folder done."
 deactivate
 echo "Virtual environment deactivated."
 echo "--End--"
