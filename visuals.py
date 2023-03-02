@@ -5,25 +5,27 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--path")
+parser.add_argument("--image")
 
 args = parser.parse_args()
 
-image = 'baby_legend.png'
+image = args.image
+
 features = [
     "RShoulder", "RElbow", "RWrist", "LShoulder", "LElbow", "LWrist",
     "RHip", "RKnee", "RAnkle", "LHip", "LKnee", "LAnkle",
 
-    "LShoulder-LElbow", "RShoulder-RElbow", "LElbow-LWrist", "RElbow-RWrist",
-    "LHip-LKnee", "RHip-RKnee", "LKnee-LAnkle", "RKnee-RAnkle",
+    "RShoulder-RElbow", "RElbow-RWrist", "LShoulder-LElbow", "LElbow-LWrist",
+    "RHip-RKnee",  "RKnee-RAnkle", "LHip-LKnee", "LKnee-LAnkle",
 
-    "up_right", "up_left", "down_right", "down_left",
-    "Nose", "LEar", "REar", "LEye", "REye"]
+    "top_right", "top_left", "bot_right", "bot_left",
+    "Nose", "LEar", "REar", "LEye", "REye", "Face", "Arrow"]
 
 r_path, version = args.path.rsplit('/', 1)
 
 with open(r_path + '/values.json') as json_file:
     values = json.load(json_file)
-with open(r_path + '/positions.json') as pos_file:
+with open(r_path + '/positions_v2.json') as pos_file:
     positions = json.load(pos_file)
 
 with open(args.path + '/shap_scalled.json') as shap_file:

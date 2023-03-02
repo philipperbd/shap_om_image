@@ -71,15 +71,15 @@ class ShapOnImageAuto:
         shap_values = [shap_value*alpha for shap_value in shap_dataset.values()]
         color = [feature_color(plot_name, feature, self.values) if feature != "Face" else 0.5 for feature in shap_dataset.keys()]
             
-        scatter = plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
+        plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
 
-        arr_x, arr_y = 202, 221
+        arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
 
-        plt.arrow(x=arr_x, y=arr_y, dx=0, dy=sym[0]*10, head_width=5, color="purple", label='symmetry') # top / bot
-        plt.arrow(x=arr_x, y=arr_y, dx=sym[1]*10, dy=0, head_width=5, color="purple") # left / right
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]*15, head_width=5, color="purple") # top / bot
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15, dy=0, head_width=5, color="purple") # left / right
         
         plt.close(fig)
-        fig.savefig(path + plot_name + '.png')
+        fig.savefig(path + plot_name + '.png', dpi=500)
 
     def create_plot_linear(self, path, plot_name, suptitle, title, sym, alpha=1):
         """
@@ -111,7 +111,7 @@ class ShapOnImageAuto:
                 feature_type = feature[-2:]
                 x = self.positions[feature[:-2]]['x']
                 y = self.positions[feature[:-2]]['y']
-                shap = shap / 7
+                shap = shap / 3
 
                 if feature_type == '_x':
                     plt.plot([x - abs(shap)/2, x + abs(shap)/2],
@@ -120,13 +120,13 @@ class ShapOnImageAuto:
                     plt.plot([x, x], [y - abs(shap)/2,
                              y + abs(shap)/2], c=color)
 
-        plt.arrow(202, 221, 0, sym[0] * 10,
-                  head_width=5, color="purple")  # Top/Bot
-        plt.arrow(202, 221, sym[1] * 10, 0, head_width=5,
-                  color="purple")  # Left/Right
+        arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
+
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]*15, head_width=5, color="purple") # top / bot
+        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15, dy=0, head_width=5, color="purple") # left / right
 
         plt.close(fig)
-        fig.savefig(path + plot_name + '.png')
+        fig.savefig(path + plot_name + '.png', dpi=500)
 
     def create_plots(self, path="", alpha=1):
         """Create several plots and save them in path.

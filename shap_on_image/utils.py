@@ -28,7 +28,7 @@ def click_event(event, x, y, flags, params):
     self, img = params[0], params[1]
     if event == cv2.EVENT_LBUTTONDOWN:
         font = cv2.FONT_HERSHEY_SIMPLEX
-        #cv2.putText(img, str(x) + ',' +str(y), (x, y), font, 1, (255, 0, 0), 2)
+        cv2.putText(img, str(x) + ',' +str(y), (x, y), font, 1, (255, 0, 0), 2)
         cv2.imshow('image', img)
         self.positions[self.features[self.feature_cnt-1]] = {'x': x, 'y': y}
         print(x, y)
