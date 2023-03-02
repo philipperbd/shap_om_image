@@ -11,8 +11,8 @@ args = parser.parse_args()
 
 def get_values_labels(path, dataset):
 
-    labels = pd.read_pickle(path + 'labels_' + dataset + '.pkl')
-    shap_values = pd.read_pickle(path + 'shap_values_' + dataset + '.pkl')
+    labels = pd.read_pickle(path + 'labels.pkl')
+    shap_values = pd.read_pickle(path + 'shap_values.pkl')
 
     return shap_values, labels
 
