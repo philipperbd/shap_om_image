@@ -78,10 +78,14 @@ class ShapOnImageAuto:
 
         arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
 
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]
-                  * 15, head_width=5, color="purple")  # top / bot
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15,
-                  dy=0, head_width=5, color="purple")  # left / right
+        plt.arrow(
+            x=arr_pos[0], y=arr_pos[1], 
+            dx=0, dy=-(sym[0]-1)*20, 
+            head_width=5, color="purple")  # top / bot
+        plt.arrow(
+            x=arr_pos[0], y=arr_pos[1], 
+            dx=(sym[1]-1)*20, dy=0, 
+            head_width=5, color="purple")  # left / right
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png', dpi=500)
@@ -127,8 +131,14 @@ class ShapOnImageAuto:
 
         arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
 
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=0, dy=sym[0]*15, head_width=5, color="purple") # top / bot
-        plt.arrow(x=arr_pos[0], y=arr_pos[1], dx=sym[1]*15, dy=0, head_width=5, color="purple") # left / right
+        plt.arrow(
+            x=arr_pos[0], y=arr_pos[1], 
+            dx=0, dy=-(sym[0]-1)*20, 
+            head_width=5, color="purple") # top / bot
+        plt.arrow(
+            x=arr_pos[0], y=arr_pos[1], 
+            dx=(sym[1]-1)*20, dy=0, 
+            head_width=5, color="purple") # left / right
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png', dpi=500)

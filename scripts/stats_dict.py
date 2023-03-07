@@ -8,7 +8,7 @@ parser.add_argument("--path")
 
 args = parser.parse_args()
 
-def symmetry(shap, plot_name):
+def symmetry_shap(shap, plot_name):
     """
     return value of symmetry for top/bot and left/right
     """
@@ -55,18 +55,74 @@ def symmetry(shap, plot_name):
 
     return [sym_top_bot, sym_left_right]
 
+def symmetry_values(values, dataset, label):
+    """
+    return value of symmetry for top/bot and left/right
+    """
+    check_list_top = [
+        'lshoulder-lelbow', 'rshoulder-relbow', 'lelbow-lwrist', 'relbow-rwrist',
+        'lshoulder', 'rshoulder', 'lelbow', 'relbow', 'lwrist', 'rwrist',
+        'top_right', 'top_left']
+    check_list_right = [
+        'rshoulder-relbow', 'relbow-rwrist', 'rshoulder', 'relbow', 'rwrist',
+        'rhip-rknee', 'rknee-rankle', 'rhip', 'rknee', 'rankle',
+        'top_right', 'bot_right']
+
+    top, bot, right, left = [], [], [], []
+    nb_top, nb_bot, nb_right, nb_left = 0, 0, 0, 0
+
+    for feature, mean_value in values[dataset][label].items():
+        if feature == "Face":
+            continue
+        if dataset[:11] == 'linear_data':
+            feature = feature[:-2]
+        if feature.lower() in check_list_top:
+            top.append(mean_value['mean_value'])
+            nb_top += 1
+        else:
+            bot.append(mean_value['mean_value'])
+            nb_bot += 1
+        if feature.lower() in check_list_right:
+            right.append(mean_value['mean_value'])
+            nb_right += 1
+        else:
+            left.append(mean_value['mean_value'])
+            nb_left += 1
+
+    top, bot, right, left = sum(top), sum(bot), sum(right), sum(left)
+
+    if bot > top:
+        sym_top_bot = round((bot / top), 2) * -1
+    else:
+        sym_top_bot = round((top / bot), 2)
+    if right > left:
+        sym_left_right = round((right / left), 2) * -1
+    else:
+        sym_left_right = round((left / right), 2)
+    
+    if nb_top != nb_bot != nb_left != nb_right:
+        print(dataset, label, "error")
+    
+    print(
+        dataset, label, 
+        "top", top, "bot", bot, "t/b", sym_top_bot, 
+        "left", left, "right", right, "l/r", sym_left_right)
+
+    return [sym_top_bot, sym_left_right]
+
 def stats_dict(auc, datasets):
     stats = auc
     for dataset in datasets:
         t_b, l_r = [], []
-        for label in ["_normal", "_anormal"]:
+        for label in ["normal", "anormal"]:
             stats[dataset]["mean"] = round(stats[dataset]["mean"], 2)
             stats[dataset]["std"] = round(stats[dataset]["std"], 2)
-            stats[dataset]["sym" + label] = {}
+            stats[dataset]["sym_" + label] = {}
             if dataset != "amplitudes":
-                sym = symmetry(shap=shap, plot_name=dataset+label)
-                stats[dataset]["sym" + label]["T-B"] = sym[0] 
-                stats[dataset]["sym" + label]["L-R"] = sym[1] 
+                sym = symmetry_values(values=values, dataset=dataset, label=label)
+                #sym = symmetry_shap(shap=shap, plot_name=dataset + '_' + label)
+                stats[dataset]["sym_" + label]["T-B"] = sym[0] 
+                stats[dataset]["sym_" + label]["L-R"] = sym[1] 
                 t_b.append(sym[0])
                 l_r.append(sym[1])
         stats[dataset]["sym_global"] = {
@@ -84,6 +140,11 @@ def save(stats):
 # ouvrir shap dict
 f = open(args.path + "shap_scalled.json")
 shap = json.load(f)
+f.close()
+
+# ouvrir values dict
+f = open("data/mean_values.json")
+values = json.load(f)
 f.close()
 
 # ouvrir auc dict

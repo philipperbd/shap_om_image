@@ -52,8 +52,8 @@ def informations(self, plot_name, stats):
 
     title = (
         'AUC: ' + str(mean_auc) + '(' + str(std_auc) + ') ' +
-        'L/R: ' + str(sym[0]) + ' ' +
-        'T/B: ' + str(-sym[1]))
+        'T/B: ' + str(sym[0]) + ' ' +
+        'L/R: ' + str(sym[1]))
 
     return suptitle, title, sym
 

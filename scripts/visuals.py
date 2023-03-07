@@ -25,11 +25,13 @@ r_path, version = args.path.rsplit('/', 1)
 
 with open(r_path + '/mean_values.json') as json_file:
     values = json.load(json_file)
+
 with open(r_path + '/positions.json') as pos_file:
     positions = json.load(pos_file)
 
 with open(args.path + '/shap_scalled.json') as shap_file:
     shap = json.load(shap_file)
+    
 with open(args.path + '/stats.json') as stats_file:
     stats = json.load(stats_file)
 
