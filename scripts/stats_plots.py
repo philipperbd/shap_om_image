@@ -48,15 +48,19 @@ def auc_plot(stats, datasets):
 
     fig, ax = plt.subplots()
 
-    plt.errorbar(x, y, yerr=y_error, fmt='o', capsize=5)
+    plt.errorbar(x, y, yerr=y_error, fmt='o', capsize=5, label="Mean AUC + std")
+
+    ax.axhline(y=0.95, color='r', linestyle='--', label='PoC objective')
 
     plt.xlabel("Dataset")
     plt.ylabel("Mean AUC")
-    plt.title("Mean AUC with std by dataset")
+    plt.title("Performance of XGBoost on every dataset")
 
     plt.xticks(rotation=90)
 
     plt.ylim(0, 1)
+
+    ax.legend(loc='lower right')
 
     plt.savefig(
         args.path + "stats_plots/mean_auc.png", 
