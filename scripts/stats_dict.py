@@ -100,13 +100,13 @@ def symmetry_values(values, dataset, label):
     else:
         sym_left_right = round((left / right), 2)
     
-    if nb_top != nb_bot != nb_left != nb_right:
-        print(dataset, label, "error")
+    # if nb_top != nb_bot != nb_left != nb_right:
+    #     print(dataset, label, "error")
     
-    print(
-        dataset, label, 
-        "top", top, "bot", bot, "t/b", sym_top_bot, 
-        "left", left, "right", right, "l/r", sym_left_right)
+    # print(
+    #     dataset, label, 
+    #     "top", top, "bot", bot, "t/b", sym_top_bot, 
+    #     "left", left, "right", right, "l/r", sym_left_right)
 
     return [sym_top_bot, sym_left_right]
 
