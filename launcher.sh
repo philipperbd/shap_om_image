@@ -34,25 +34,27 @@ else
      echo "Create dictionnary with shap values: ${DONE}"
 fi 2>/dev/null
 
-if ! python scripts/minmaxscaler.py --input data/$1/shap.json &> /dev/null; then
+if ! python scripts/minmaxscaler.py --input data/$1/shap.json; then
      echo "Min-max scaler on shap values: ${ERROR}"
 else
      echo "Min-max scaler on shap values: ${DONE}"
 fi 2>/dev/null
 
-if ! python scripts/stats_dict.py --path data/$1/ &> /dev/null; then
+if ! python scripts/stats_dict.py --path data/$1/; then
      echo "Create dictionnary with statistics: ${ERROR}"
 else
      echo "Create dictionnary with statistics: ${DONE}"
 fi 2>/dev/null
 
-if ! python scripts/stats_plots.py --path data/$1/ &> /dev/null; then
+if ! python scripts/stats_plots.py --path data/$1/; then
      echo "Generate statistics plots: ${ERROR}"
 else
      echo "Generate statistics plots: ${DONE}"
 fi 2>/dev/null
 
-if ! python scripts/visuals.py --path data/$1 --image data/baby.png &> /dev/null; then
+python scripts/visuals.py --path data/$1 --image data/baby.png   
+
+if ! python scripts/visuals.py --path data/$1 --image data/baby.png; then
      echo "Generate baby visuals: ${ERROR}"
 else
      echo "Generate baby visuals: ${DONE}"
@@ -64,7 +66,7 @@ else
      echo "Add every visuals and plots to a report folder: ${DONE}"
 fi 2>/dev/null
 
-if ! deactivate &> /dev/null; then
+if ! deactivate; then
      echo "Virtual environment deactivation: ${ERROR}"
 else
      echo "Virtual environment ${YELLOW}deactivated${NOCOLOR}"

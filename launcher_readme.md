@@ -1,1 +1,1 @@
-source launcher.sh  [path_to_folder] [model_name] [image_path]
+source launcher.sh  [path_to_folder] [model_name]
