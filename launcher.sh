@@ -50,11 +50,9 @@ if ! python scripts/stats_plots.py --path data/$1/; then
      echo "Generate statistics plots: ${ERROR}"
 else
      echo "Generate statistics plots: ${DONE}"
-fi 2>/dev/null
+fi 2>/dev/null 
 
-python scripts/visuals.py --path data/$1 --image data/baby.png   
-
-if ! python scripts/visuals.py --path data/$1 --image data/baby.png; then
+if ! python scripts/visuals.py --path data/$1 --image data/baby_2.png; then
      echo "Generate baby visuals: ${ERROR}"
 else
      echo "Generate baby visuals: ${DONE}"

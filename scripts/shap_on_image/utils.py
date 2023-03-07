@@ -65,7 +65,7 @@ def feature_color(plot_name, feature, values):
         face = []
         for elem in ['Nose', 'REar', 'LEar', 'REye', 'LEye']:
             face.append(values[dataset][label][elem]["mean_value"])
-        color = sum(face) / len(face)
+        color = 1 - (sum(face) / len(face))
     else: 
-        color = values[dataset][label][feature]["mean_value"]
+        color = 1 - values[dataset][label][feature]["mean_value"]
     return color
