@@ -46,7 +46,7 @@ class ShapOnImageAuto:
         """
         return self.positions
 
-    def create_plot(self, path, plot_name, suptitle, title, sym, alpha=1):
+    def create_plot(self, path, plot_name, suptitle, title, sym, full_plt=True, alpha=1):
         """
         Plot the figure with image and shap values at specific positions
         args:
@@ -68,24 +68,32 @@ class ShapOnImageAuto:
 
         x = [self.positions[feature]['x'] for feature in features]
         y = [self.positions[feature]['y'] for feature in features]
-        shap_values = [shap_value *
-                       alpha for shap_value in shap_dataset.values()]
+
+        
         color = [
             feature_color(plot_name, feature, self.values)
             for feature in shap_dataset.keys()]
 
-        plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
+        
+        if full_plt:
+            plt.title(title[0] + title[1])
 
-        arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
+            shap_values = [shap_value *
+                       alpha for shap_value in shap_dataset.values()]
+            plt.scatter(x, y, s=shap_values, c=color, cmap=cm.bwr, label='shap')
 
-        plt.arrow(
-            x=arr_pos[0], y=arr_pos[1], 
-            dx=0, dy=-(sym[0]-1)*20, 
-            head_width=5, color="purple")  # top / bot
-        plt.arrow(
-            x=arr_pos[0], y=arr_pos[1], 
-            dx=(sym[1]-1)*20, dy=0, 
-            head_width=5, color="purple")  # left / right
+            arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
+            plt.arrow(
+                x=arr_pos[0], y=arr_pos[1], 
+                dx=0, dy=-(sym[0]-1)*20, 
+                head_width=5, color="purple")  # top / bot
+            plt.arrow(
+                x=arr_pos[0], y=arr_pos[1], 
+                dx=(sym[1]-1)*20, dy=0, 
+                head_width=5, color="purple")  # left / right
+        else:
+            plt.title(title[0])
+            plt.scatter(x, y, s=30, c=color, cmap=cm.bwr, label='shap')
 
         plt.close(fig)
         fig.savefig(path + plot_name + '.png', dpi=500)
@@ -143,7 +151,7 @@ class ShapOnImageAuto:
         plt.close(fig)
         fig.savefig(path + plot_name + '.png', dpi=500)
 
-    def create_plots(self, path="", alpha=1):
+    def create_plots(self, path="", full_plt=True, alpha=1):
         """Create several plots and save them in path.
 
         Args:
@@ -162,4 +170,4 @@ class ShapOnImageAuto:
                 self.create_plot(
                     path=path, plot_name=plot_name,
                     suptitle=suptitle, title=title,
-                    sym=sym, alpha=alpha)
+                    sym=sym, full_plt=full_plt, alpha=alpha)

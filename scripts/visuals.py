@@ -5,11 +5,8 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--path")
-parser.add_argument("--image")
 
 args = parser.parse_args()
-
-image = args.image
 
 features = [
     "RShoulder", "RElbow", "RWrist", "LShoulder", "LElbow", "LWrist",
@@ -36,9 +33,13 @@ with open(args.path + '/stats.json') as stats_file:
     stats = json.load(stats_file)
 
 
-ShapImAuto = ShapOnImageAuto(image=image, features=features,
+ShapImAuto = ShapOnImageAuto(image='data/baby_without_shap.png', features=features,
                              positions=positions, values=values, 
                              shap=shap, stats=stats)
+ShapImAuto.create_plots(path=args.path + '/baby_visuals/', full_plt=False, alpha=1000)
 
 
-ShapImAuto.create_plots(path=args.path + '/baby_visuals/', alpha=1000)
+ShapImAuto = ShapOnImageAuto(image='data/baby_shap.png', features=features,
+                             positions=positions, values=values, 
+                             shap=shap, stats=stats)
+ShapImAuto.create_plots(path=args.path + '/baby_visuals_shap/', full_plt=True, alpha=1000)

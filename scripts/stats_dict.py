@@ -45,7 +45,7 @@ def symmetry_shap(shap, plot_name):
     top, bot, right, left = sum(top), sum(bot), sum(right), sum(left)
 
     if bot > top:
-        sym_top_bot = round((bot / top), 2)
+        sym_top_bot = round((bot / top), 2) * -1
     else:
         sym_top_bot = round((top / bot), 2)
     if right > left:
@@ -119,8 +119,8 @@ def stats_dict(auc, datasets):
             stats[dataset]["std"] = round(stats[dataset]["std"], 2)
             stats[dataset]["sym_" + label] = {}
             if dataset != "amplitudes":
-                sym = symmetry_values(values=values, dataset=dataset, label=label)
-                #sym = symmetry_shap(shap=shap, plot_name=dataset + '_' + label)
+                #sym = symmetry_values(values=values, dataset=dataset, label=label)
+                sym = symmetry_shap(shap=shap, plot_name=dataset + '_' + label)
                 stats[dataset]["sym_" + label]["T-B"] = sym[0] 
                 stats[dataset]["sym_" + label]["L-R"] = sym[1] 
                 t_b.append(sym[0])

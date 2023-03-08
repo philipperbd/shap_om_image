@@ -16,13 +16,13 @@ else
      echo "Virtual environment ${YELLOW}activated${NOCOLOR}"
 fi 2>/dev/null
 
-if ! rm -rf data/$1/baby_visuals data/$1/stats_plots data/$1/shap.json data/$1/shap_scalled.json data/$1/stats.json;  then
+if ! rm -rf data/$1/baby_visuals data/$1/baby_visuals_shap data/$1/stats_plots data/$1/shap.json data/$1/shap_scalled.json data/$1/stats.json;  then
     echo "Cleaning: ${ERROR}"
 else
     echo "Cleaning: ${DONE}"
 fi 2>/dev/null
 
-if ! mkdir data/$1/baby_visuals data/$1/stats_plots; then
+if ! mkdir data/$1/baby_visuals_shap data/$1/baby_visuals data/$1/stats_plots; then
     echo "Init new directories: ${ERROR}"
 else
     echo "Init new directories: ${DONE}"
@@ -52,13 +52,13 @@ else
      echo "Generate statistics plots: ${DONE}"
 fi 2>/dev/null 
 
-if ! python scripts/visuals.py --path data/$1 --image data/baby_values.png; then
+if ! python scripts/visuals.py --path data/$1; then
      echo "Generate baby visuals: ${ERROR}"
 else
      echo "Generate baby visuals: ${DONE}"
 fi 2>/dev/null
 
-if ! zip -r reports/$1_$2.zip data/$1/stats_plots data/$1/baby_visuals &> /dev/null; then
+if ! zip -r reports/$1_$2.zip data/$1/stats_plots data/$1/baby_visuals data/$1/baby_visuals_shap &> /dev/null; then
      echo "Add every visuals and plots to a report folder: ${ERROR}"
 else
      echo "Add every visuals and plots to a report folder: ${DONE}"
