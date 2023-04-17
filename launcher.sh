@@ -1,5 +1,4 @@
-NOCOLOR='\033[0m'
-BLUE='\033[0;34m'
+
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -16,13 +15,13 @@ else
      echo "Virtual environment ${YELLOW}activated${NOCOLOR}"
 fi 2>/dev/null
 
-if ! rm -rf data/$1/baby_visuals data/$1/baby_visuals_shap data/$1/stats_plots data/$1/shap.json data/$1/shap_scalled.json data/$1/stats.json;  then
+if ! rm -rf data/$1/baby_visuals_shap data/$1/stats_plots data/$1/shap.json data/$1/shap_scalled.json data/$1/stats.json;  then
     echo "Cleaning: ${ERROR}"
 else
     echo "Cleaning: ${DONE}"
 fi 2>/dev/null
 
-if ! mkdir data/$1/baby_visuals_shap data/$1/baby_visuals data/$1/stats_plots; then
+if ! mkdir data/$1/baby_visuals_shap data/$1/stats_plots; then
     echo "Init new directories: ${ERROR}"
 else
     echo "Init new directories: ${DONE}"

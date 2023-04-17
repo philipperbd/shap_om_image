@@ -32,12 +32,10 @@ with open(args.path + '/shap_scalled.json') as shap_file:
 with open(args.path + '/stats.json') as stats_file:
     stats = json.load(stats_file)
 
-
-ShapImAuto = ShapOnImageAuto(image='data/baby_without_shap.png', features=features,
-                             positions=positions, values=values, 
-                             shap=shap, stats=stats)
-ShapImAuto.create_plots(path=args.path + '/baby_visuals/', full_plt=False, alpha=1000)
-
+#ShapImAuto = ShapOnImageAuto(image='data/baby_without_shap.png', features=features,
+#                             positions=positions, values=values, 
+#                             shap=shap, stats=stats)
+#ShapImAuto.create_plots(path=args.path + '/baby_visuals/', full_plt=False, alpha=1000)
 
 ShapImAuto = ShapOnImageAuto(image='data/baby_shap.png', features=features,
                              positions=positions, values=values, 

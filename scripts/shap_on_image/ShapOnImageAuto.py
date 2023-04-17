@@ -3,6 +3,7 @@ import matplotlib.cm as cm
 import os
 import cv2
 from shap_on_image.utils import *
+import numpy as np
 
 
 class ShapOnImageAuto:
@@ -85,11 +86,11 @@ class ShapOnImageAuto:
             arr_pos = [self.positions["Arrow"]["x"], self.positions["Arrow"]["x"]]
             plt.arrow(
                 x=arr_pos[0], y=arr_pos[1], 
-                dx=0, dy=-(sym[0]-1)*20, 
+                dx=0, dy=-1 * np.sign(sym[0]) * (np.abs(sym[0]) - 1) * 20, 
                 head_width=5, color="purple")  # top / bot
             plt.arrow(
                 x=arr_pos[0], y=arr_pos[1], 
-                dx=(sym[1]-1)*20, dy=0, 
+                dx=np.sign(sym[1]) * (np.abs(sym[1]) - 1) * 20, dy=0, 
                 head_width=5, color="purple")  # left / right
         else:
             plt.title(title[0])
